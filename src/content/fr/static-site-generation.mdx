@@ -1,0 +1,48 @@
+---
+title: "Génération statique de sites pour les applications multilingues"
+description: "Comment utiliser la génération statique de sites pour pré‑générer des pages multilingues au moment du build, afin d’optimiser les performances et le SEO."
+date: "2025-02-10"
+author: "Maria Santos"
+tags: ["SSG", "performance", "Next.js"]
+---
+
+La génération statique de sites est une approche puissante pour les sites web multilingues. En pré‑générant les pages au moment du build, vous fournissez un HTML rapide, facilement mis en cache pour chaque langue, sans surcharge de traduction au moment de l’exécution.
+
+## L’enjeu de performance
+
+Quand un utilisateur à Tokyo demande votre page en japonais, il reçoit un fichier HTML pré-généré servi depuis un nœud edge de CDN à proximité. Il n’y a aucun délai de rendu côté serveur, aucun appel d’API à un service de traduction et aucun décalage de mise en page pendant le chargement des traductions. La page est complète dès le premier octet.
+
+C’est plus important qu’il n’y paraît. Les études montrent régulièrement que chaque tranche supplémentaire de 100 ms de temps de chargement réduit les taux de conversion. Pour les utilisateurs internationaux qui subissent déjà parfois une latence plus élevée, éliminer les allers-retours réseau inutiles est essentiel.
+
+## Comment ça marche avec Next.js
+
+Next.js fournit `generateStaticParams` pour définir quelles combinaisons de paramètres doivent être pré‑rendues. Pour un blog multilingue, cela signifie générer des pages pour chaque combinaison de langue (locale) et de slug de contenu.
+
+```typescript
+export async function generateStaticParams() {
+  const locales = ["en", "es", "fr", "ja"];
+  const posts = getAllPostSlugs();
+
+  return locales.flatMap((locale) =>
+    posts.map((slug) => ({ locale, slug }))
+  );
+}
+```
+
+Au moment de la compilation, Next.js appelle votre composant de page une fois pour chaque ensemble de paramètres, générant des fichiers HTML statiques pouvant être déployés sur n&#39;importe quel CDN.
+
+
+## Avantages pour le SEO
+
+Les moteurs de recherche traitent chaque URL propre à une langue comme une page distincte. Avec le SSG, vous pouvez vous assurer que :
+
+- Chaque page localisée possède les bons attributs `<html lang>`.
+- Les métadonnées comme les titres et les descriptions sont traduites.
+- Les pages se chargent rapidement, ce qui est un facteur de positionnement.
+- Le contenu est entièrement rendu dans le code source HTML, et non hydraté côté client.
+
+## Compromis
+
+La génération statique ne convient pas à toutes les pages. Le contenu qui change fréquemment ou qui est personnalisé pour chaque utilisateur nécessite toujours un rendu côté serveur ou côté client. Mais pour les articles de blog, la documentation, les pages marketing et les autres contenus relativement stables, le SSG est le choix optimal.
+
+Le temps de build augmente linéairement avec le nombre de langues et de pages. Pour un blog avec 50 articles et 5 langues, cela représente 250 pages à générer. Les outils de build modernes gèrent cela efficacement, mais il reste important de surveiller ce point à mesure que votre site grandit.

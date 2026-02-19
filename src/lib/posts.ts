@@ -13,11 +13,18 @@ export interface PostMeta {
   tags: string[];
 }
 
-export function getAllPosts(): PostMeta[] {
-  const files = fs.readdirSync(contentDir).filter((f) => f.endsWith(".mdx"));
+function getLocaleDir(locale: string) {
+  const localeDir = path.join(contentDir, locale);
+  if (fs.existsSync(localeDir)) return localeDir;
+  return path.join(contentDir, "en");
+}
+
+export function getAllPosts(locale: string = "en"): PostMeta[] {
+  const dir = getLocaleDir(locale);
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith(".mdx"));
   const posts = files.map((filename) => {
     const slug = filename.replace(/\.mdx$/, "");
-    const raw = fs.readFileSync(path.join(contentDir, filename), "utf-8");
+    const raw = fs.readFileSync(path.join(dir, filename), "utf-8");
     const { data } = matter(raw);
     return {
       slug,
@@ -33,8 +40,14 @@ export function getAllPosts(): PostMeta[] {
   );
 }
 
-export function getPost(slug: string) {
-  const raw = fs.readFileSync(path.join(contentDir, `${slug}.mdx`), "utf-8");
+export function getPost(slug: string, locale: string = "en") {
+  const dir = getLocaleDir(locale);
+  const filePath = path.join(dir, `${slug}.mdx`);
+  // Fall back to English if locale file doesn't exist
+  const actualPath = fs.existsSync(filePath)
+    ? filePath
+    : path.join(contentDir, "en", `${slug}.mdx`);
+  const raw = fs.readFileSync(actualPath, "utf-8");
   const { data, content } = matter(raw);
   return {
     meta: {
@@ -50,8 +63,9 @@ export function getPost(slug: string) {
 }
 
 export function getAllSlugs(): string[] {
+  const dir = path.join(contentDir, "en");
   return fs
-    .readdirSync(contentDir)
+    .readdirSync(dir)
     .filter((f) => f.endsWith(".mdx"))
     .map((f) => f.replace(/\.mdx$/, ""));
 }

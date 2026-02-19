@@ -1,0 +1,64 @@
+---
+title: "Patrones para almacenar traducciones localmente"
+description: "Incorporar traducciones directamente en tu aplicación para mejorar la fiabilidad, el rendimiento y el uso sin conexión."
+date: "2025-03-05"
+author: "James Park"
+tags: ["translations", "architecture", "performance"]
+---
+
+Cargar traducciones desde un CDN remoto en tiempo de ejecución es cómodo durante el desarrollo, pero las aplicaciones en producción se benefician de empaquetar las traducciones localmente. Este patrón elimina la dependencia de la red, reduce el tiempo hasta que la aplicación es interactiva y permite el uso sin conexión.
+
+## Por qué empaquetar las traducciones
+
+Imagina lo que ocurre cuando tu CDN de traducciones sufre una caída. Si tu aplicación depende de él en tiempo de ejecución, los usuarios ven contenido sin traducir o, peor aún, un diseño roto. Al empaquetar las traducciones en tu artefacto de compilación, eliminas por completo este único punto de fallo.
+
+Hay beneficios adicionales:
+
+- **Latencia cero** -- Las traducciones están disponibles de inmediato, sin ninguna solicitud de red.
+- **Builds deterministas** -- Las traducciones exactas que se usan quedan registradas en el control de versiones.
+- **Infraestructura más sencilla** -- No hay configuración de CDN ni invalidación de caché que administrar.
+- **Funcionalidad sin conexión** -- Las aplicaciones web progresivas funcionan sin acceso a la red.
+
+## El patrón
+
+El flujo de trabajo es sencillo. Durante el desarrollo, usas una herramienta de línea de comandos (CLI) para obtener las traducciones y guardarlas en archivos JSON locales. Estos archivos se incluyen en tu repositorio junto con tu código fuente.
+
+```
+project/
+  public/
+    _gt/
+      es.json
+      fr.json
+      ja.json
+      zh.json
+  src/
+    loadTranslations.ts
+```
+
+Una función de loader importa el archivo correcto según la configuración regional activa:
+
+```typescript
+export default async function loadTranslations(locale: string) {
+  const translations = await import(`../public/_gt/${locale}.json`);
+  return translations.default;
+}
+```
+
+Esta función se ejecuta durante el renderizado en el servidor o la generación estática, de modo que las traducciones quedan incorporadas en el HTML generado.
+
+
+## Mantener las traducciones actualizadas
+
+El principal inconveniente es que las traducciones deben actualizarse explícitamente. Cuando cambia el contenido de origen, vuelves a ejecutar el comando de traducción, revisas el resultado y haces commit de los archivos actualizados.
+
+En realidad, esto es una ventaja para muchos equipos. Crea un registro de auditoría claro y evita que cambios inesperados en las traducciones aparezcan en producción. El flujo de trabajo encaja de forma natural en un proceso de revisión de pull requests.
+
+## Cuándo usar este patrón
+
+El almacenamiento local es ideal para aplicaciones en las que:
+
+- El contenido cambia por ciclos de lanzamiento, no de forma continua.
+- La fiabilidad y el rendimiento son prioridades.
+- El equipo quiere tener control total sobre lo que llega a producción.
+
+Para aplicaciones con contenido que cambia rápidamente o con cientos de *locales*, un enfoque híbrido puede ser más práctico: incluye localmente los *locales* más comunes y recurre al CDN para el resto.

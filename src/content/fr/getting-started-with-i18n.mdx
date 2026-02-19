@@ -1,0 +1,61 @@
+---
+title: "Bien démarrer avec l’internationalisation"
+description: "Un guide pratique pour rendre votre application Web accessible aux utilisateurs du monde entier grâce à l’internationalisation et à la localisation."
+date: "2025-01-15"
+author: "Alex Chen"
+tags: ["i18n", "développement web", "tutoriel"]
+---
+
+L’internationalisation, souvent abrégée en i18n, est le processus de conception de votre application de façon à ce qu’elle puisse être adaptée à différentes langues et régions sans modifier le code. C’est une étape fondamentale avant la localisation, qui correspond à l’adaptation concrète du contenu à une locale spécifique.
+
+## Pourquoi l’internationalisation est essentielle
+
+Le web est mondial. Plus de 60 % des internautes préfèrent naviguer dans une langue autre que l’anglais. En intégrant l’i18n dès le départ, vous évitez des refontes coûteuses plus tard et vous ouvrez votre produit à un public bien plus large.
+
+Voici quelques avantages clés :
+
+- **Expansion du marché** -- Atteignez des utilisateurs dans de nouvelles régions sans avoir à reconstruire votre application.
+- **Meilleure expérience utilisateur** -- Les utilisateurs s’engagent davantage avec un contenu dans leur langue maternelle.
+- **Avantages SEO** -- Le contenu localisé est mieux classé dans les moteurs de recherche régionaux.
+
+## Concepts de base
+
+### Identification des locales
+
+Une locale est généralement représentée par une combinaison de codes de langue et de région, comme `en-US` pour l’anglais américain ou `ja-JP` pour le japonais tel qu’il est utilisé au Japon. La norme BCP 47 en définit le format.
+
+### Externalisation des textes
+
+La première étape pratique consiste à extraire toutes les chaînes affichées à l’utilisateur de votre base de code vers des fichiers de ressources externes. Cette séparation permet aux traducteurs de travailler indépendamment des développeurs.
+
+```typescript
+// Au lieu de coder les chaînes en dur
+const greeting = "Welcome back";
+
+// Les externaliser
+const greeting = t("greeting.welcome_back");
+```
+
+
+### Formatage tenant compte des paramètres régionaux
+
+Les nombres, les dates, les devises et même l&#39;ordre de tri varient selon la langue et la région. Les frameworks modernes fournissent des API pour gérer cela automatiquement.
+
+```typescript
+// Formate correctement pour chaque locale
+new Intl.NumberFormat("de-DE").format(1234.56); // "1.234,56"
+new Intl.NumberFormat("en-US").format(1234.56); // "1,234.56"
+```
+
+
+## Stratégie d’implémentation
+
+Commencez par ces étapes :
+
+1. Analysez votre base de code pour trouver les chaînes en dur et les formats dépendants de la locale.
+2. Choisissez un framework i18n adapté à votre stack.
+3. Configurez la détection de langue et le routage.
+4. Extrayez les chaînes et mettez en place un workflow de traduction.
+5. Testez avec une pseudo-localisation avant d’envoyer le contenu aux traducteurs.
+
+L’investissement est rapidement rentabilisé. Une application bien internationalisée est plus simple à maintenir et à faire évoluer sur différents marchés.

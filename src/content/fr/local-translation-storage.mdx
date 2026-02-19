@@ -1,0 +1,64 @@
+---
+title: "Modèles de stockage local des traductions"
+description: "Regrouper les traductions directement dans votre application pour la fiabilité, la rapidité et la prise en charge hors ligne."
+date: "2025-03-05"
+author: "James Park"
+tags: ["translations", "architecture", "performance"]
+---
+
+Récupérer les traductions depuis un CDN distant à l'exécution est pratique pendant le développement, mais les applications en production gagnent à embarquer les traductions en local. Ce modèle élimine une dépendance au réseau, réduit le délai avant que l'interface soit interactive et permet la prise en charge hors ligne.
+
+## Pourquoi regrouper les traductions
+
+Imaginez que votre CDN de traduction tombe en panne. Si votre application en dépend à l’exécution, les utilisateurs verront du contenu non traduit ou, pire, une mise en page brisée. En intégrant les traductions directement dans votre artefact de build, vous éliminez complètement ce point unique de défaillance.
+
+Cela offre aussi d’autres avantages :
+
+- **Latence zéro** -- Les traductions sont disponibles immédiatement, sans requête réseau.
+- **Builds déterministes** -- Les traductions exactes utilisées sont figées dans le contrôle de version.
+- **Infrastructure plus simple** -- Aucune configuration de CDN ni invalidation de cache à gérer.
+- **Fonctionnement hors ligne** -- Les Progressive Web Apps fonctionnent sans accès réseau.
+
+## Le modèle
+
+Le workflow est simple. Pendant le développement, vous utilisez un outil CLI pour récupérer les traductions et les écrire dans des fichiers JSON locaux. Ces fichiers sont versionnés dans votre dépôt, aux côtés de votre code source.
+
+```
+project/
+  public/
+    _gt/
+      es.json
+      fr.json
+      ja.json
+      zh.json
+  src/
+    loadTranslations.ts
+```
+
+Une fonction de chargement importe le fichier correspondant à la locale active :
+
+```typescript
+export default async function loadTranslations(locale: string) {
+  const translations = await import(`../public/_gt/${locale}.json`);
+  return translations.default;
+}
+```
+
+Cette fonction est appelée lors du rendu côté serveur ou de la génération statique, ce qui intègre directement les traductions dans le HTML généré.
+
+
+## Maintenir les traductions à jour
+
+La principale contrepartie est que les traductions doivent être mises à jour explicitement. Quand le contenu source change, vous réexécutez la commande de traduction, vous relisez la sortie, puis vous validez les fichiers mis à jour.
+
+C’est en fait un avantage pour beaucoup d’équipes. Cela crée un historique d’audit clair et empêche des changements de traduction inattendus d’apparaître en production. Ce workflow s’intègre naturellement dans un processus de revue de pull requests.
+
+## Quand utiliser ce pattern
+
+Le stockage local est idéal pour les applications dans lesquelles :
+
+- Le contenu change à chaque version, pas en continu.
+- La fiabilité et les performances sont des priorités.
+- L'équipe veut un contrôle total sur ce qui est déployé en production.
+
+Pour les applications avec un contenu qui change rapidement ou des centaines de locales, une approche hybride peut être plus pratique : regrouper localement les locales les plus courantes et s'appuyer sur un CDN pour le reste.

@@ -1,19 +1,12 @@
 import { T } from "gt-next";
-import { tx } from "gt-next/server";
+import { getLocale } from "gt-next/server";
 import { getAllPosts } from "@/lib/posts";
 import Header from "@/components/Header";
 import LanguageBadge from "@/components/LanguageBadge";
 
 export default async function Home() {
-  const posts = getAllPosts();
-
-  const translatedPosts = await Promise.all(
-    posts.map(async (post) => ({
-      ...post,
-      title: await tx(post.title),
-      description: await tx(post.description),
-    }))
-  );
+  const locale = await getLocale();
+  const posts = getAllPosts(locale);
 
   return (
     <div className="min-h-screen bg-neutral-950 font-sans text-neutral-200">
@@ -34,12 +27,12 @@ export default async function Home() {
         </div>
 
         <div className="space-y-4">
-          {translatedPosts.map((post) => (
+          {posts.map((post) => (
             <article
               key={post.slug}
               className="group border border-neutral-800 rounded-lg p-6 hover:border-neutral-700 transition-colors"
             >
-              <a href={`/blog/${post.slug}`} className="block">
+              <a href={`/${locale}/blog/${post.slug}`} className="block">
                 <div className="flex items-center gap-3 mb-3">
                   <time className="text-xs text-neutral-500">{post.date}</time>
                   <span className="text-neutral-700">|</span>

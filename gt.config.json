@@ -11,6 +11,12 @@
   "files": {
     "gt": {
       "output": "public/_gt/[locale].json"
+    },
+    "mdx": {
+      "include": [
+        "src/content/[locale]/*.mdx"
+      ],
+      "output": "src/content/[locale]/[fileName]"
     }
   },
   "_versionId": "4246676697c0a3a72175ea189f3e8dd3ba2e04f48960df009db8b90d7c6ea345"

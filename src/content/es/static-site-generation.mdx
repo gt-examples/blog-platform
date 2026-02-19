@@ -1,0 +1,48 @@
+---
+title: "Generación de sitios estáticos para apps multilingües"
+description: "Cómo usar la generación de sitios estáticos para prerenderizar páginas multilingües en tiempo de build para lograr un rendimiento y SEO óptimos."
+date: "2025-02-10"
+author: "Maria Santos"
+tags: ["SSG", "performance", "Next.js"]
+---
+
+La generación de sitios estáticos es un enfoque muy eficaz para sitios web multilingües. Al prerenderizar las páginas en tiempo de build, entregas HTML rápido y fácilmente almacenable en caché para cada idioma sin el coste adicional de traducción en tiempo de ejecución.
+
+## El caso de rendimiento
+
+Cuando un usuario en Tokio solicita tu página en japonés, recibe un archivo HTML precompilado servido desde un nodo perimetral de la CDN cercano. No hay retrasos de renderizado en el servidor, ni llamadas a una API de traducción, ni cambios de diseño mientras se cargan las traducciones. La página está completa desde el primer byte.
+
+Esto es más importante de lo que podrías pensar. Los estudios muestran de forma consistente que cada 100 ms adicionales de tiempo de carga reducen las tasas de conversión. Para los usuarios internacionales, que quizá ya tengan que lidiar con una mayor latencia, eliminar viajes de ida y vuelta innecesarios es fundamental.
+
+## Cómo funciona con Next.js
+
+Next.js ofrece `generateStaticParams` para definir qué combinaciones de parámetros deben pre-renderizarse. En un blog multilingüe, esto implica generar páginas para cada combinación de idioma y slug de contenido.
+
+```typescript
+export async function generateStaticParams() {
+  const locales = ["en", "es", "fr", "ja"];
+  const posts = getAllPostSlugs();
+
+  return locales.flatMap((locale) =>
+    posts.map((slug) => ({ locale, slug }))
+  );
+}
+```
+
+Durante la compilación, Next.js llama a tu componente de página una vez por cada conjunto de parámetros, generando archivos HTML estáticos que se pueden distribuir desde cualquier CDN.
+
+
+## Beneficios de SEO
+
+Los motores de búsqueda tratan cada URL específica de un idioma como una página distinta. Con SSG, puedes asegurarte de que:
+
+- Cada página localizada incluya los atributos `<html lang>` correctos.
+- Los metadatos como títulos y descripciones estén traducidos.
+- Las páginas se carguen rápidamente, lo cual es un factor de posicionamiento en buscadores.
+- El contenido se renderice por completo en el HTML inicial, en lugar de hidratarse en el cliente.
+
+## Compromisos
+
+La generación estática no es adecuada para todas las páginas. El contenido que cambia con frecuencia o que está personalizado para cada usuario sigue necesitando renderizado del lado del servidor o del lado del cliente. Pero para publicaciones de blog, documentación, páginas de marketing y otro contenido relativamente estable, SSG es la opción óptima.
+
+El tiempo de compilación crece linealmente con el número de locales y de páginas. Para un blog con 50 publicaciones y 5 locales, eso son 250 páginas que hay que generar. Las herramientas de compilación modernas manejan esto de forma eficiente, pero vale la pena vigilarlo a medida que tu sitio crece.
