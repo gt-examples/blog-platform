@@ -4,8 +4,12 @@ import { getAllPosts } from "@/lib/posts";
 import Header from "@/components/Header";
 import LanguageBadge from "@/components/LanguageBadge";
 
-export default async function Home() {
-  const locale = await getLocale();
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   const posts = getAllPosts(locale);
 
   return (

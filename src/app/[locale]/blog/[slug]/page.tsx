@@ -33,8 +33,7 @@ export default async function BlogPost({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const locale = await getLocale();
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const { meta, content } = getPost(slug, locale);
 
   return (
