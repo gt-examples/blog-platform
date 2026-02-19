@@ -1,0 +1,63 @@
+---
+title: "Local Translation Storage Patterns"
+description: "Bundling translations directly in your application for reliability, speed, and offline support."
+date: "2025-03-05"
+author: "James Park"
+tags: ["translations", "architecture", "performance"]
+---
+
+Fetching translations from a remote CDN at runtime is convenient during development, but production applications benefit from bundling translations locally. This pattern eliminates a network dependency, reduces time-to-interactive, and enables offline support.
+
+## Why Bundle Translations
+
+Consider what happens when your translation CDN has an outage. If your application depends on it at runtime, users see untranslated content or, worse, a broken layout. By bundling translations into your build artifact, you remove this single point of failure entirely.
+
+There are additional benefits:
+
+- **Zero latency** -- Translations are available immediately, with no network request.
+- **Deterministic builds** -- The exact translations used are captured in version control.
+- **Simpler infrastructure** -- No CDN configuration or cache invalidation to manage.
+- **Offline capability** -- Progressive web apps work without network access.
+
+## The Pattern
+
+The workflow is straightforward. During development, you use a CLI tool to pull translations and write them to local JSON files. These files are committed to your repository alongside your source code.
+
+```
+project/
+  public/
+    _gt/
+      es.json
+      fr.json
+      ja.json
+      zh.json
+  src/
+    loadTranslations.ts
+```
+
+A loader function imports the correct file based on the active locale:
+
+```typescript
+export default async function loadTranslations(locale: string) {
+  const translations = await import(`../public/_gt/${locale}.json`);
+  return translations.default;
+}
+```
+
+This function is called during server-side rendering or static generation, so translations are baked into the HTML output.
+
+## Keeping Translations Fresh
+
+The main trade-off is that translations must be updated explicitly. When source content changes, you run the translation command again, review the output, and commit the updated files.
+
+This is actually an advantage for many teams. It creates a clear audit trail and prevents unexpected translation changes from appearing in production. The workflow fits naturally into a pull request review process.
+
+## When to Use This Pattern
+
+Local storage is ideal for applications where:
+
+- Content changes on a release cycle, not continuously.
+- Reliability and performance are priorities.
+- The team wants full control over what ships to production.
+
+For applications with rapidly changing content or hundreds of locales, a hybrid approach may be more practical -- bundle the most common locales locally and fall back to CDN for the rest.

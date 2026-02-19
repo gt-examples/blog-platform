@@ -1,0 +1,59 @@
+---
+title: "Getting Started with Internationalization"
+description: "A practical guide to making your web application accessible to users worldwide through internationalization and localization."
+date: "2025-01-15"
+author: "Alex Chen"
+tags: ["i18n", "web development", "tutorial"]
+---
+
+Internationalization, often abbreviated as i18n, is the process of designing your application so it can be adapted to various languages and regions without engineering changes. It is a foundational step before localization, which is the actual adaptation of content for a specific locale.
+
+## Why Internationalization Matters
+
+The web is global. Over 60% of internet users prefer to browse in a language other than English. By building with i18n from the start, you avoid costly refactors later and open your product to a much larger audience.
+
+Consider these key benefits:
+
+- **Market expansion** -- Reach users in new regions without rebuilding your application.
+- **Better user experience** -- People engage more deeply with content in their native language.
+- **SEO advantages** -- Localized content ranks better in regional search engines.
+
+## Core Concepts
+
+### Locale Identification
+
+A locale is typically represented as a combination of language and region codes, such as `en-US` for American English or `ja-JP` for Japanese as used in Japan. The BCP 47 standard defines the format.
+
+### Text Externalization
+
+The first practical step is extracting all user-facing strings from your codebase into external resource files. This separation allows translators to work independently from developers.
+
+```typescript
+// Instead of hardcoding strings
+const greeting = "Welcome back";
+
+// Externalize them
+const greeting = t("greeting.welcome_back");
+```
+
+### Locale-Aware Formatting
+
+Numbers, dates, currencies, and even sorting order vary by locale. Modern frameworks provide APIs to handle this automatically.
+
+```typescript
+// Formats correctly for each locale
+new Intl.NumberFormat("de-DE").format(1234.56); // "1.234,56"
+new Intl.NumberFormat("en-US").format(1234.56); // "1,234.56"
+```
+
+## Implementation Strategy
+
+Start with these steps:
+
+1. Audit your codebase for hardcoded strings and locale-dependent formatting.
+2. Choose an i18n framework that fits your stack.
+3. Set up locale detection and routing.
+4. Extract strings and establish a translation workflow.
+5. Test with pseudo-localization before sending content to translators.
+
+The investment pays off quickly. A well-internationalized application is easier to maintain and scale across markets.

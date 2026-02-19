@@ -1,0 +1,47 @@
+---
+title: "Static Site Generation for Multilingual Apps"
+description: "How to use static site generation to pre-render multilingual pages at build time for optimal performance and SEO."
+date: "2025-02-10"
+author: "Maria Santos"
+tags: ["SSG", "performance", "Next.js"]
+---
+
+Static site generation is a powerful approach for multilingual websites. By pre-rendering pages at build time, you deliver fast, cacheable HTML for every locale without runtime translation overhead.
+
+## The Performance Case
+
+When a user in Tokyo requests your Japanese page, they get a pre-built HTML file served from a CDN edge node nearby. There is no server-side rendering delay, no API calls to a translation service, and no layout shift as translations load. The page is complete from the first byte.
+
+This matters more than you might think. Research consistently shows that each additional 100ms of load time reduces conversion rates. For international users who may already face higher latency, eliminating unnecessary round trips is critical.
+
+## How It Works with Next.js
+
+Next.js provides `generateStaticParams` to define which parameter combinations should be pre-rendered. For a multilingual blog, this means generating pages for every combination of locale and content slug.
+
+```typescript
+export async function generateStaticParams() {
+  const locales = ["en", "es", "fr", "ja"];
+  const posts = getAllPostSlugs();
+
+  return locales.flatMap((locale) =>
+    posts.map((slug) => ({ locale, slug }))
+  );
+}
+```
+
+At build time, Next.js calls your page component once for each parameter set, producing static HTML files that can be deployed to any CDN.
+
+## SEO Benefits
+
+Search engines treat each locale-specific URL as a distinct page. With SSG, you can ensure that:
+
+- Every localized page has proper `<html lang>` attributes.
+- Metadata like titles and descriptions are translated.
+- Pages load quickly, which is a ranking factor.
+- Content is fully rendered in the HTML source, not hydrated client-side.
+
+## Trade-offs
+
+Static generation is not suitable for every page. Content that changes frequently or is personalized per user still needs server-side or client-side rendering. But for blog posts, documentation, marketing pages, and other relatively stable content, SSG is the optimal choice.
+
+The build time grows linearly with the number of locales and pages. For a blog with 50 posts and 5 locales, that is 250 pages to generate. Modern build tools handle this efficiently, but it is worth monitoring as your site grows.
