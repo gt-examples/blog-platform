@@ -1,7 +1,44 @@
 {
-  "1eae14f9d42305a1": "Conçu avec Next.js et General Translation. Les traductions sont intégrées localement pour la fiabilité et la performance.",
+  "1eae14f9d42305a1": "Construit avec Next.js et General Translation. Les traductions sont intégrées localement pour la fiabilité et la performance.",
+  "2f18466914eb64c9": [
+    "Ceci est un exemple d'application créée avec ",
+    {
+      "c": "General Translation",
+      "i": 1,
+      "t": "a"
+    },
+    ". Voir le ",
+    {
+      "c": "code source sur GitHub",
+      "i": 2,
+      "t": "a"
+    },
+    "."
+  ],
   "35daa65e37b14b4c": "Blog Platform",
+  "8a0106166189ad53": {
+    "c": [
+      {
+        "c": "Langue :",
+        "i": 2,
+        "t": "span"
+      },
+      {
+        "c": {
+          "i": 4,
+          "k": "_gt_value_4",
+          "v": "v"
+        },
+        "i": 3,
+        "t": "span"
+      }
+    ],
+    "i": 1,
+    "t": "div"
+  },
+  "91369ad56b72d041": "Blog MDX multilingue avec génération statique (SSG), métadonnées SEO et routage par langue, propulsé par General Translation",
   "946043f73ed0cd90": "Retour à tous les articles",
   "b31e38fc4d567111": "Un blog généré statiquement avec une prise en charge complète de l'internationalisation. Pages pré-rendues dans chaque locale pour des performances optimales et un bon référencement.",
-  "bf8a1162b9556127": "Plateforme de blog multilingue"
+  "bf8a1162b9556127": "Plateforme de blog multilingue",
+  "c39299af540b31bf": "Plateforme de blog | General Translation"
 }
