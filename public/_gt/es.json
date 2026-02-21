@@ -1,7 +1,44 @@
 {
   "1eae14f9d42305a1": "Desarrollado con Next.js y General Translation. Las traducciones se incluyen localmente para mayor fiabilidad y rendimiento.",
-  "35daa65e37b14b4c": "Plataforma de Blog",
+  "2f18466914eb64c9": [
+    "Esta es una aplicación de ejemplo creada con ",
+    {
+      "c": "General Translation",
+      "i": 1,
+      "t": "a"
+    },
+    ". Ver el ",
+    {
+      "c": "código fuente en GitHub",
+      "i": 2,
+      "t": "a"
+    },
+    "."
+  ],
+  "35daa65e37b14b4c": "Blog Platform",
+  "8a0106166189ad53": {
+    "c": [
+      {
+        "c": "Idioma:",
+        "i": 2,
+        "t": "span"
+      },
+      {
+        "c": {
+          "i": 4,
+          "k": "_gt_value_4",
+          "v": "v"
+        },
+        "i": 3,
+        "t": "span"
+      }
+    ],
+    "i": 1,
+    "t": "div"
+  },
+  "91369ad56b72d041": "Blog MDX multilingüe con SSG, metadatos SEO y enrutamiento por locale, impulsado por General Translation",
   "946043f73ed0cd90": "Volver a todas las publicaciones",
   "b31e38fc4d567111": "Un blog generado estáticamente con soporte completo de internacionalización. Páginas pre-renderizadas en cada idioma para un rendimiento y SEO óptimos.",
-  "bf8a1162b9556127": "Plataforma de Blog Multilingüe"
+  "bf8a1162b9556127": "Plataforma de Blog Multilingüe",
+  "c39299af540b31bf": "Plataforma de blogs | General Translation"
 }
